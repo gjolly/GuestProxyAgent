@@ -1,0 +1,13 @@
+# the package includes a BPF binary
+azure-proxy-agent: binary-from-other-architecture
+# These spelling errors comme from vendored libraries that
+# are unlikely to be shown to the user.
+azure-proxy-agent: spelling-error-in-binary
+# This seem to be a common issue with Rust packages
+azure-proxy-agent: hardening-no-fortify-functions
+# This service is by definition a privileged service
+azure-proxy-agent: systemd-service-file-missing-hardening-features [usr/lib/systemd/system/azure-proxy-agent.service]
+# This service intercepts the network traffic going to the IMDS service
+# to prevent un-authorized processes from fetching the metadata. Thus, it
+# should start before the network becomes available to other services.
+azure-proxy-agent: systemd-service-file-refers-to-unusual-wantedby-target network.target [usr/lib/systemd/system/azure-proxy-agent.service]

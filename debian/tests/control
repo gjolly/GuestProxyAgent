@@ -1,0 +1,2 @@
+Tests: run-cargo-tests
+Depends: @builddeps@

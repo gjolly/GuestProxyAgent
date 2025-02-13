@@ -1,0 +1,3 @@
+linux-ebpf/ebpf_cgroup.o usr/lib/azure-proxy-agent
+target/release/azure-proxy-agent usr/sbin
+debian/proxy-agent.json etc/azure/proxy-agent.json

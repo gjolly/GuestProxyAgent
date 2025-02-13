@@ -1,0 +1,10 @@
+Add the missing Documentation tag to the systemd unit file provided with the source.
+--- a/proxy_agent_setup/src/linux/azure-proxy-agent.service
++++ b/proxy_agent_setup/src/linux/azure-proxy-agent.service
+@@ -1,5 +1,6 @@
+ [Unit]
+ Description=Microsoft Azure GuestProxyAgent
++Documentation=man:azure-proxy-agent(8)
+ DefaultDependencies=no
+ After=local-fs.target
+ Before=network-pre.target

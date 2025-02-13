@@ -1,0 +1,13 @@
+# Most of these are from test files or vendored libraries
+# and can safely be ignored
+azure-proxy-agent: very-long-line-length-in-source-file
+# No GPG signature is available from Github
+azure-proxy-agent: debian-watch-does-not-check-openpgp-signature
+# These examples are from the vendored libraries and should
+# not be installed
+azure-proxy-agent: package-does-not-install-examples [rust-vendor/*]
+# A bug was created upstream to track this:
+# https://github.com/Azure/GuestProxyAgent/issues/195
+azure-proxy-agent: maintainer-manual-page [debian/azure-proxy-agent.8]
+# This field is used by dh-cargo and dh-cargo-vendored-sources
+azure-proxy-agent: unknown-field Vendored-Sources-Rust

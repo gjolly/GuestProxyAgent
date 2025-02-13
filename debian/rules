@@ -1,0 +1,109 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/default.mk
+include /usr/share/dpkg/architecture.mk
+include /usr/share/rustc/architecture.mk
+
+export DEB_HOST_RUST_TYPE DEB_HOST_GNU_TYPE
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export CARGO=/usr/share/cargo/bin/cargo
+export CARGO_HOME=$(shell pwd)/debian/cargo_home
+export CARGO_REGISTRY=$(shell pwd)/debian/cargo_registry
+export DEB_CARGO_CRATE=$(DEB_SOURCE)_$(DEB_VERSION_UPSTREAM)
+export DEB_HOST_RUST_TYPE
+
+# Needed for Rust vendored sources tracking
+export DH_CARGO_VENDORED_SOURCES = /usr/share/cargo/bin/dh-cargo-vendored-sources
+export CARGO_VENDOR_DIR = rust-vendor
+
+DEB_BUILD_MAINT_OPTIONS = buildinfo=+path
+VENDOR_TARBALL = azure-proxy-agent_$(DEB_VERSION_UPSTREAM).orig-$(CARGO_VENDOR_DIR).tar.xz
+ebpf_path := linux-ebpf
+CARGO_OPTS += --verbose --release --offline --manifest-path proxy_agent/Cargo.toml
+
+# Map DEB_TARGETs to BPF TARGETs
+BPF_TARGET := $(DEB_TARGET_ARCH)
+# If no mapping is found, raise an error.
+ifeq ($(BPF_TARGET),amd64)
+	BPF_TARGET := x86
+endif
+
+%:
+	dh $@
+
+vendor-tarball-sanity-check:
+	if [ -e ../$(VENDOR_TARBALL) ]; then \
+		echo "../$(VENDOR_TARBALL) already exists, bailing!"; \
+		exit 1; \
+	fi
+
+vendor-deps-cargo:
+	if QUILT_PATCHES=debian/patches quilt applied | grep vendor-remove-unused-deps ; then \
+		echo "Detecting patch on vendor dir applied, aborting."; \
+		exit 1; \
+	fi
+	rm -rf $(CARGO_VENDOR_DIR)
+	# Deliberately don't use the wrapper, as it expects the configure step
+	# to have occurred already.
+	# If you have to modify the path here, don't forget to change the README.source doc
+	# as well.
+	env -i cargo-vendor-filterer \
+		--no-default-features \
+		--tier 2 \
+		--platform '*-*-linux-gnu' \
+		--platform '*-*-linux-gnueabi' \
+		-s proxy_agent/Cargo.toml \
+		-s proxy_agent_shared/Cargo.toml \
+		-s proxy_agent_extension/Cargo.toml \
+		-s proxy_agent_setup/Cargo.toml $(CARGO_VENDOR_DIR)
+
+vendor-deps: vendor-deps-cargo
+	# Remove unused and undesirable data files (e.g. test data for vendored crates)
+	rm -r $(CARGO_VENDOR_DIR)/*/tests
+	# Remove the checksum files to allow us to patch the crates to remove extraneous dependencies
+	for crate in $(CARGO_VENDOR_DIR)/*; do \
+		sed -i 's/^{"files":.*"package":"\([a-z0-9]\+\)"}$$/{"files":{},"package":"\1"}/' \
+			$$crate/.cargo-checksum.json; \
+	done
+	# Cleanup temp files
+	rm -rf $(CARGO_HOME)
+
+vendor-tarball: vendor-tarball-sanity-check vendor-deps
+	tar --sort=name --mtime=@0 --owner=0 --group=0 \
+		--numeric-owner \
+		--pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+		-caf ../$(VENDOR_TARBALL) $(CARGO_VENDOR_DIR)
+
+override_dh_clean:
+	dh_clean
+	rm -rf $(CARGO_HOME) debian/azure-proxy-agent.service
+
+execute_before_dh_auto_configure:
+	$(CARGO) prepare-debian $(CARGO_VENDOR_DIR) --link-from-system $(CARGO_OPTS)
+	rm -f proxy_agent/Cargo.lock
+	rm -f .cargo/config
+
+override_dh_auto_build:
+	if test -f Cargo.lock; then mv Cargo.lock Cargo.lock.upstream; fi
+	cargo build $(CARGO_OPTS)
+	clang -g -target bpf -O2 \
+		-I/usr/include/$(DEB_TARGET_GNU_TYPE) \
+		-D__TARGET_ARCH_$(BPF_TARGET) \
+		-c $(ebpf_path)/ebpf_cgroup.c \
+		-o $(ebpf_path)/ebpf_cgroup.o
+
+execute_after_dh_auto_clean:
+	if test -f Cargo.lock.upstream; then mv Cargo.lock.upstream Cargo.lock; fi
+	cd proxy_agent && cargo clean --verbose
+	rm -rf $(CARGO_HOME) debian/azure-guest-proxy-agent.service linux-ebpf/ebpf_cgroup.o
+	rm -rf $(CARGO_REGISTRY)
+
+override_dh_auto_test:
+ifneq (nocheck,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
+	dh_auto_test
+endif
+
+execute_after_dh_auto_install:
+	install -m0644 proxy_agent_setup/src/linux/azure-proxy-agent.service \
+		debian/azure-proxy-agent.service
+	dh_installsystemd

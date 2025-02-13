@@ -1,0 +1,40 @@
+Source: azure-proxy-agent
+Section: rust
+Priority: optional
+Maintainer: Gauthier Jolly <gauthier.jolly@canonical.com>
+Build-Depends: clang,
+               debhelper-compat (= 13),
+               dh-cargo,
+               jq,
+               libbpf-dev,
+               libbpfcc-dev,
+               libssl-dev,
+               llvm,
+               musl-tools,
+               pkgconf
+Standards-Version: 4.7.0
+Homepage: https://github.com/Azure/GuestProxyAgent
+XS-Vendored-Sources-Rust: ahash@0.8.11, aho-corasick@1.1.3, allocator-api2@0.2.21, anstream@0.6.18, anstyle-parse@0.2.6, anstyle-query@1.1.2, anstyle@1.0.10, assert_matches@1.5.0, autocfg@1.4.0, aya-obj@0.1.0, aya@0.12.0, bitflags@2.8.0, byteorder@1.5.0, bytes@1.9.0, cfg-if@1.0.0, cfg_aliases@0.2.1, clap@4.5.27, clap_builder@4.5.27, clap_derive@4.5.24, clap_lex@0.7.4, colorchoice@1.0.3, concurrent-queue@2.5.0, core-error@0.0.0, crossbeam-deque@0.8.6, crossbeam-epoch@0.9.18, crossbeam-utils@0.8.21, deranged@0.3.11, either@1.13.0, futures-channel@0.3.31, futures-core@0.3.31, futures-sink@0.3.31, futures-task@0.3.31, futures-util@0.3.31, getrandom@0.2.15, hashbrown@0.12.3, hashbrown@0.14.5, hdrhistogram@7.5.4, heck@0.5.0, hex@0.4.3, hmac-sha256@1.1.8, http-body-util@0.1.2, http-body@1.0.1, http@1.2.0, httparse@1.9.5, httpdate@1.0.3, hyper-util@0.1.10, hyper@1.5.2, indexmap@1.9.3, is_terminal_polyfill@1.70.1, itertools@0.10.5, itoa@1.0.14, lazy_static@1.5.0, libc@0.2.169, log@0.4.25, memchr@2.7.4, memoffset@0.9.1, mio@1.0.3, nix@0.29.0, num-conv@0.1.0, num-traits@0.2.19, object@0.32.2, once_cell@1.20.2, os_info@3.9.2, pin-project-internal@1.1.8, pin-project-lite@0.2.16, pin-project@1.1.8, pin-utils@0.1.0, powerfmt@0.2.0, ppv-lite86@0.2.20, proc-macro2@1.0.93, quote@1.0.38, rand@0.8.5, rand_chacha@0.3.1, rand_core@0.6.4, rayon-core@1.12.1, rayon@1.10.0, regex-automata@0.4.9, regex-syntax@0.8.5, regex@1.11.1, ryu@1.0.18, serde-xml-rs@0.6.0, serde@1.0.217, serde_derive@1.0.217, serde_json@1.0.137, slab@0.4.9, smallvec@1.13.2, socket2@0.5.8, strsim@0.11.1, syn@2.0.96, sysinfo@0.28.4, sysinfo@0.29.11, thiserror-impl@1.0.69, thiserror@1.0.69, thread-id@4.2.2, time-core@0.1.2, time-macros@0.2.19, time@0.3.37, tokio-macros@2.5.0, tokio-util@0.7.13, tokio@1.43.0, tower-http@0.5.2, tower-layer@0.3.3, tower-service@0.3.3, tower@0.4.13, tracing-core@0.1.33, tracing@0.1.41, try-lock@0.2.5, unicode-ident@1.0.14, users@0.11.0, utf8parse@0.2.2, uuid-macro-internal@1.12.1, uuid@1.12.1, version_check@0.9.5, want@0.3.1, xml-rs@0.8.25, zerocopy-derive@0.7.35, zerocopy@0.7.35
+Rules-Requires-Root: no
+
+Package: azure-proxy-agent
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ${cargo:Depends},
+Recommends: ${cargo:Recommends},
+Suggests: btrfs-progs,
+          e2fsprogs,
+          grub2,
+          systemd,
+          udev,
+          xfsprogs,
+          ${cargo:Suggests},
+Provides: ${cargo:Provides},
+Built-Using: ${cargo:Built-Using},
+Description: Azure Guest Proxy Agent
+ The Azure Guest Proxy Agent is a daemon that runs on the Azure guest
+ operating system and provides a proxy for the Azure Fabric Controller
+ to communicate with the guest operating system.
+ This package contains the proxy agent.

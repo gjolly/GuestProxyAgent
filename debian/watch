@@ -1,0 +1,2 @@
+version=4
+https://github.com/Azure/GuestProxyAgent/tags .*/archive/.*/v?([\d\.]+).tar.gz
