@@ -1,3 +1,16 @@
+azure-proxy-agent (1.0.25-0ubuntu2) UNRELEASED; urgency=medium
+
+  * Fix d/azure-proxy-agent.install (LP: #2098948).
+  * Run unit tests during the build and not during autopkgtest. Unit tests
+    involves building a rust binary and thus would require re-doing all the
+    cargo setup so that the test use the vendor directory, which is not very
+    convenient. Instead, a new autopkgtest is introduced to verify that the
+    agent is running and that it can intercept traffic to the IMDS
+    (LP: #2098949).
+  * Set Architecture to amd64 and arm64 only in d/control (LP: #2098947).
+
+ -- Gauthier Jolly <gauthier.jolly@canonical.com>  Thu, 20 Feb 2025 11:02:42 +0100
+
 azure-proxy-agent (1.0.25-0ubuntu1) plucky; urgency=medium
 
   * Initial release (LP: #2098393).
