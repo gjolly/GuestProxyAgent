@@ -1,0 +1,16 @@
+#!/bin/bash -eu
+
+SERVICE="azure-proxy-agent.service"
+LOG_FILE="/var/log/azure-proxy-agent/ProxyAgent.Connection.log"
+IMDS_ADDRESS="169.254.169.254"
+
+if ! systemctl is-active --quiet "$SERVICE"; then
+	echo "$SERVICE is not running." 1>&2
+	exit 1
+fi
+
+wget --timeout=0.1 --tries 1 "http://$IMDS_ADDRESS" &> /dev/null || true
+if ! grep -q 'wget' "$LOG_FILE"; then
+	echo "Connection to IMDS not intercepted." 1>&2
+	exit 1
+fi

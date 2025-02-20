@@ -1,2 +1,2 @@
-Tests: run-cargo-tests
-Depends: @builddeps@
+Tests: smoke
+Depends: @, wget

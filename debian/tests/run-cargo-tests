@@ -1,8 +1,0 @@
-#!/bin/bash -eux
-
-OUT_DIR="./target/release/deps"
-mkdir -p $(OUT_DIR)
-
-cp -f -T "proxy_agent/config/GuestProxyAgent.linux.json" "$(OUT_DIR)/proxy-agent.json"
-RUST_BACKTRACE=1 cargo test --verbose --release \
-      --manifest-path proxy_agent/Cargo.toml -- --test-threads=1
