@@ -1,4 +1,4 @@
-azure-proxy-agent (1.0.25-0ubuntu2) UNRELEASED; urgency=medium
+azure-proxy-agent (1.0.25-0ubuntu2) plucky; urgency=medium
 
   * Fix d/azure-proxy-agent.install (LP: #2098948).
   * Run unit tests during the build and not during autopkgtest. Unit tests
