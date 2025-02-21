@@ -1,3 +1,9 @@
+azure-proxy-agent (1.0.25-0ubuntu3) UNRELEASED; urgency=medium
+
+  * Fix smoke autopkgtest (LP: #2099698).
+
+ -- Gauthier Jolly <gauthier.jolly@canonical.com>  Fri, 21 Feb 2025 15:21:21 +0100
+
 azure-proxy-agent (1.0.25-0ubuntu2) plucky; urgency=medium
 
   * Fix d/azure-proxy-agent.install (LP: #2098948).
