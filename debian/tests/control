@@ -1,2 +1,3 @@
 Tests: smoke
 Depends: @, wget
+Restrictions: needs-sudo

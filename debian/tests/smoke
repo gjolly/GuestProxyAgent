@@ -9,7 +9,10 @@ if ! systemctl is-active --quiet "$SERVICE"; then
 	exit 1
 fi
 
-wget --timeout=0.1 --tries 1 "http://$IMDS_ADDRESS" &> /dev/null || true
+sudo ip route add blackhole "$IMDS_ADDRESS/32"
+
+wget --no-proxy "http://$IMDS_ADDRESS" 2>&1 || true
+
 if ! grep -q 'wget' "$LOG_FILE"; then
 	echo "Connection to IMDS not intercepted." 1>&2
 	exit 1
