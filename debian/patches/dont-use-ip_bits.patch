@@ -1,0 +1,12 @@
+--- a/proxy_agent/src/redirector.rs
++++ b/proxy_agent/src/redirector.rs
+@@ -94,7 +94,8 @@
+     }
+ 
+     pub fn destination_ipv4_addr(&self) -> Ipv4Addr {
+-        Ipv4Addr::from_bits(self.destination_ipv4.to_be())
++        let bytes = self.destination_ipv4.to_be_bytes();
++        Ipv4Addr::new(bytes[0], bytes[1], bytes[2], bytes[3])
+     }
+ }
+ 
