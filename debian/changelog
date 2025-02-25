@@ -1,4 +1,4 @@
-azure-proxy-agent (1.0.25-0ubuntu3) UNRELEASED; urgency=medium
+azure-proxy-agent (1.0.25-0ubuntu3) plucky; urgency=medium
 
   * Fix smoke autopkgtest (LP: #2099698).
 
