@@ -1,3 +1,9 @@
+azure-proxy-agent (1.0.25-0ubuntu4) UNRELEASED; urgency=medium
+
+  * Use the cargo wrapper to build the binary (LP: TODO).
+
+ -- Gauthier Jolly <gauthier.jolly@canonical.com>  Tue, 25 Feb 2025 15:23:43 +0100
+
 azure-proxy-agent (1.0.25-0ubuntu3) plucky; urgency=medium
 
   * Fix smoke autopkgtest (LP: #2099698).
