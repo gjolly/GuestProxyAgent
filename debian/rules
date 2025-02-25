@@ -85,7 +85,7 @@ execute_before_dh_auto_configure:
 
 override_dh_auto_build:
 	if test -f Cargo.lock; then mv Cargo.lock Cargo.lock.upstream; fi
-	cargo build $(CARGO_OPTS)
+	$(CARGO) build $(CARGO_OPTS)
 	clang -g -target bpf -O2 \
 		-I/usr/include/$(DEB_TARGET_GNU_TYPE) \
 		-D__TARGET_ARCH_$(BPF_TARGET) \
